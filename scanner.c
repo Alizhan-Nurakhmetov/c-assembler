@@ -35,11 +35,11 @@ void init_scanner(char *file_name) {
   scanner.line = 1;
 }
 
-char peek() {
+char peek_char() {
   return *scanner.current;
 }
 
-char consume() {
+char consume_char() {
   char c = *scanner.current;
   scanner.current += 1;
   return c;
@@ -61,12 +61,12 @@ Token create_token(TokenType type, int value) {
 
 void consume_whitespace() {
   while (true) {
-    char c = peek();
+    char c = peek_char();
     if (c != ' ' && c != '\t' && c != '\n' && c != '\r')
       return;
     if (c == '\n')
       scanner.line += 1;
-    consume();
+    consume_char();
   }
 }
 
@@ -84,8 +84,8 @@ bool is_alpha_numeric(char c) {
 
 Token create_int(char c) {
   int result = c - '0';
-  while (is_digit(peek())) {
-    c = consume();
+  while (is_digit(peek_char())) {
+    c = consume_char();
     result = (result * 10) + (c - '0'); // append the digit c to result
   }
   return create_token(TOKEN_INTEGER, result);
@@ -102,8 +102,8 @@ bool is_token_equal_to(char* s) {
 }
 
 Token create_identifier() {
-  while (is_alpha_numeric(peek())) {
-    consume();
+  while (is_alpha_numeric(peek_char())) {
+    consume_char();
   }
 
   if (is_token_equal_to("mov"))
@@ -129,7 +129,7 @@ Token scan_token() {
   consume_whitespace();
 
   scanner.start = scanner.current;
-  char c = consume();
+  char c = consume_char();
 
   if (c == ',')
     return create_token(TOKEN_COMMA, 0);

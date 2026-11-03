@@ -1,4 +1,4 @@
 run:
-  gcc main.c scanner.c -o main
+  gcc main.c scanner.c parser.c -o main
   ./main
 
