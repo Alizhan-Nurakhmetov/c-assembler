@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include "scanner.h"
 #include "parser.h"
+u8 final_binary[255];
 
 struct Parser {
   Token *current;
@@ -76,11 +77,37 @@ void parse_move() {
   exit(1);
 }
 
+void parse_alu(int operation) {
+  Token dest = expect(TOKEN_REGISTER, "Expected the register to store the result in");
+  expect(TOKEN_COMMA, "Expected comma");
+  Token a = expect(TOKEN_REGISTER, "Expected reg1");
+  if (a.value != 1) {
+    printf("Error on line %d: The first input must be reg1.\n", a.line);
+    exit(1);
+  }
+
+  if (operation != 5) {  
+    expect(TOKEN_COMMA, "Expected comma");
+    Token b = expect(TOKEN_REGISTER, "Expected reg2");
+    if (b.value != 2) {
+      printf("Error on line %d: The second input must be reg2.\n", b.line);
+      exit(1);
+    }
+  }
+
+  // 01 DDD OOO
+  compile_byte(0b01000000 | (dest.value << 3) | operation);
+}
+
 void parse_line() {
   Token t = consume();
 
   if (t.type == TOKEN_MOV) {
     parse_move();
+    return;
+  }
+  if (t.type == TOKEN_ALU) {
+    parse_alu(t.value);
     return;
   }
 

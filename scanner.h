@@ -4,6 +4,7 @@ typedef enum {
   TOKEN_REGISTER,
   TOKEN_INTEGER,
   TOKEN_MOV,
+  TOKEN_ALU,
   TOKEN_COMMA,
   TOKEN_EOF,
 } TokenType;
@@ -16,7 +17,7 @@ typedef struct {
   int line;
 } Token;
 
-Token tokens[10000];
+extern Token tokens[10000];
 
 void init_scanner(char *file_name);
 

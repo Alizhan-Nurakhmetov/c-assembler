@@ -3,11 +3,13 @@
 #include <stdbool.h>
 #include <string.h>
 #include "scanner.h"
+Token tokens[10000];
 
 void read_file(char *filename, char **buffer) {
   long length;
   FILE *f = fopen(filename, "rb");
   if (f == NULL) {
+    printf("Error: could not open file '%s'\n", filename);
     exit(1);
   }
   fseek(f, 0, SEEK_END);
@@ -62,6 +64,11 @@ Token create_token(TokenType type, int value) {
 void consume_whitespace() {
   while (true) {
     char c = peek_char();
+    if (c==';') {
+      while (peek_char() != '\n' && peek_char() != '\0')
+        consume_char();
+      c = peek_char();
+    }
     if (c != ' ' && c != '\t' && c != '\n' && c != '\r')
       return;
     if (c == '\n')
@@ -108,6 +115,22 @@ Token create_identifier() {
 
   if (is_token_equal_to("mov"))
     return create_token(TOKEN_MOV, 0);
+  if (is_token_equal_to("or"))   
+  return create_token(TOKEN_ALU, 0); // 000
+  if (is_token_equal_to("add"))  
+  return create_token(TOKEN_ALU, 1); // 001
+  if (is_token_equal_to("sub"))  
+  return create_token(TOKEN_ALU, 2); // 010
+  if (is_token_equal_to("nand")) 
+  return create_token(TOKEN_ALU, 3); // 011
+  if (is_token_equal_to("and"))  
+  return create_token(TOKEN_ALU, 4); // 100
+  if (is_token_equal_to("not"))  
+  return create_token(TOKEN_ALU, 5); // 101
+  if (is_token_equal_to("xor"))  
+  return create_token(TOKEN_ALU, 6); // 110
+  if (is_token_equal_to("eq"))   
+  return create_token(TOKEN_ALU, 7); // 111
   if (is_token_equal_to("reg1"))
     return create_token(TOKEN_REGISTER, 1);
   if (is_token_equal_to("reg2"))
