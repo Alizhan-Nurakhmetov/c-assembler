@@ -15,11 +15,12 @@ void read_file(char *filename, char **buffer) {
   fseek(f, 0, SEEK_END);
   length = ftell(f);
   fseek(f, 0, SEEK_SET);
-  *buffer = malloc(length);
-  if (buffer == NULL) {
+  *buffer = malloc(length + 1);
+  if (*buffer == NULL) {
     exit(2);
   }
   fread(*buffer, 1, length, f);
+  (*buffer)[length] = '\0';
   fclose(f);
 }
 
